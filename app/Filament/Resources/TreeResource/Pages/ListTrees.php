@@ -18,6 +18,8 @@ class ListTrees extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+
     protected ?string $heading = 'Trees Section';
 
     public function getBreadcrumbs(): array
@@ -35,11 +37,15 @@ class ListTrees extends ListRecords
             Tab::make('Deceased')
                 ->modifyQueryUsing(function ($query) {
                     return $query->where('tree_status', Tree::DECEASED);
-                }), 
+                }),
             Tab::make('Healthy')
                 ->modifyQueryUsing(function ($query) {
                     return $query->where('tree_status', Tree::HEALTHY);
-                }),                    
+                }),
+            Tab::make('For Replacement')
+                ->modifyQueryUsing(function ($query) {
+                    return $query->where('tree_status', Tree::FOR_REPLACEMENT);
+                }),
         ];
     }
 }

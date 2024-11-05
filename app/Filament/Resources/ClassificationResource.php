@@ -21,7 +21,9 @@ class ClassificationResource extends Resource
 {
     protected static ?string $model = Classification::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-document-magnifying-glass';
+
+    protected static ?string $navigationGroup = 'Entities';
 
     public static function form(Form $form): Form
     {
@@ -31,12 +33,14 @@ class ClassificationResource extends Resource
                     ->schema([
                         Split::make([
                             TextInput::make('name')
+                                ->required()
                                 ->label('Classification Name'),
                             TextInput::make('description')
+                                ->required()
                                 ->label('Description'),
                         ]),
                     ]),
-                    
+
             ]);
     }
 
