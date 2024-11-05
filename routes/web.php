@@ -16,7 +16,7 @@ use App\Http\Controllers\TreeController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/admin/login');
 });
 
 Route::get('/dashboard', function () {
@@ -31,4 +31,4 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/map', [TreeController::class, 'showMap'])->name('map');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

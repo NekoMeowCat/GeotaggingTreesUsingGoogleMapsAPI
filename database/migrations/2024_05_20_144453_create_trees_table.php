@@ -21,11 +21,12 @@ return new class extends Migration
             $table->date('date_planted');
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
-            $table->foreignId('area_id')->constrained();
-            $table->foreignId('classification_id')->constrained();
+            $table->foreignId('area_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
+            $table->foreignId('classification_id')->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->date('validated_at')->nullable();
             $table->timestamps();
         });
+        
     }
 
     /**

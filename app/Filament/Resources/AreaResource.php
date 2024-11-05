@@ -22,7 +22,9 @@ class AreaResource extends Resource
 {
     protected static ?string $model = Area::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-globe-alt';
+
+    protected static ?string $navigationGroup = 'Entities';
 
     public static function form(Form $form): Form
     {
@@ -37,7 +39,7 @@ class AreaResource extends Resource
                                 ->label('Description'),
                         ]),
                     ]),
-                    
+
             ]);
     }
 
@@ -84,6 +86,4 @@ class AreaResource extends Resource
             'edit' => Pages\EditArea::route('/{record}/edit'),
         ];
     }
-
-    
 }

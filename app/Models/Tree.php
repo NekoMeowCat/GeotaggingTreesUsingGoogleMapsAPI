@@ -12,6 +12,7 @@ class Tree extends Model
 
     const HEALTHY = 'Healthy';
     const DECEASED = 'Diseased';
+    const FOR_REPLACEMENT = 'For Replacement';
 
     protected $fillable = [
         'tree_name',
@@ -21,25 +22,46 @@ class Tree extends Model
         'tree_id',
         'date_planted',
         'latitude',
-        'longitude', 
+        'longitude',
         'area_id',
         'classification_id',
         'validated_at',
     ];
 
     protected $casts = [
+        'area_id' => 'integer',
+        'classification_id' => 'integer',
+        'date_planted' => 'date',
         'latitude' => 'float',
         'longitude' => 'float',
     ];
 
-    public function area()
+
+    public function getLocationAttribute()
     {
-        return $this->belongsTo(Area::class);
+        return [
+            'lat' => $this->latitude,
+            'lng' => $this->longitude,
+        ];
     }
 
-    // Define the relationship with Classification model (Many-to-One)
+    // Define the 'setLocationAttribute' method
+    public function setLocationAttribute(?array $location): void
+    {
+        if (is_array($location)) {
+            $this->attributes['latitude'] = $location['lat'];
+            $this->attributes['longitude'] = $location['lng'];
+            unset($this->attributes['location']);
+        }
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class, 'area_id');
+    }
+
     public function classification()
     {
-        return $this->belongsTo(Classification::class);
+        return $this->belongsTo(Classification::class, 'classification_id');
     }
 }

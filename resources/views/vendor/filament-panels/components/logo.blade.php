@@ -1,1 +1,1 @@
-hello
+<img src="{{ asset('storage/images/Hostinger-logo.png') }}" alt="">

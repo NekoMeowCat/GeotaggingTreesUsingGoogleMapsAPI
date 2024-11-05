@@ -13,7 +13,7 @@ class CreateArea extends CreateRecord
 
     protected function getRedirectUrl(): string
     {
-        return $this->previousUrl ?? $this->getResource()::getUrl('index');
+        return $this->getResource()::getUrl('index');
     }
 
     protected function getCreatedNotification(): ?Notification

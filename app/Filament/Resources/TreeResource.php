@@ -17,14 +17,19 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Grid;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\ImportAction;
+use App\Filament\Imports\TreeImporter;
+
+
+
 
 class TreeResource extends Resource
 {
     protected static ?string $model = Tree::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
+
+    protected static ?string $navigationGroup = 'Tree Entry';
 
     public static function form(Form $form): Form
     {
@@ -41,83 +46,94 @@ class TreeResource extends Resource
                             ->removeUploadedFileButtonPosition('right')
                             ->uploadButtonPosition('left')
                             ->uploadProgressIndicatorPosition('left')
-                            // ->disk('public')
-                            // ->directory('images'),
+                        // ->disk('public')
+                        // ->directory('images'),
                     ]),
-                    Section::make()
-                        ->schema([
-                            Grid::make(3)
-                                ->schema([
-                                    Grid::make()
-                                        ->schema([
-                                            Forms\Components\TextInput::make('tree_name')
-                                                ->label('Tree Name')
-                                                ->required()
-                                                ->maxLength(255),                                      
-                                            // Inside the TreeResource form method
-                                            Select::make('area_id')
-                                                ->options(function () {
-                                                    // Fetch all areas from the database
-                                                    $areas = Area::all();
+                Section::make()
+                    ->schema([
+                        Grid::make(3)
+                            ->schema([
+                                Grid::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('tree_name')
+                                            ->label('Tree Name')
+                                            ->required()
+                                            ->maxLength(255),
+                                        // Inside the TreeResource form method
+                                        Select::make('area_id')
+                                            ->label('Area')
+                                            ->options(function () {
+                                                // Fetch all areas from the database
+                                                $areas = Area::all();
 
-                                                    // Convert each area to an option array
-                                                    $options = $areas->mapWithKeys(function ($area) {
-                                                        return [$area->id => $area->name]; // Assuming 'name' is the attribute you want to display
-                                                    });
+                                                // Convert each area to an option array
+                                                $options = $areas->mapWithKeys(function ($area) {
+                                                    return [$area->id => $area->name]; // Assuming 'name' is the attribute you want to display
+                                                });
 
-                                                    // Return the options array
-                                                    return $options;
-                                                }),
-                                            Select::make('classification_id')
-                                                ->options(function () {
-                                                    // Fetch all areas from the database
-                                                    $classification = Classification::all();
+                                                // Return the options array
+                                                return $options;
+                                            }),
+                                        Select::make('classification_id')
+                                            ->label('Classification')
+                                            ->options(function () {
+                                                // Fetch all areas from the database
+                                                $classification = Classification::all();
 
-                                                    // Convert each area to an option array
-                                                    $options = $classification->mapWithKeys(function ($classification) {
-                                                        return [$classification->id => $classification->name]; // Assuming 'name' is the attribute you want to display
-                                                    });
+                                                // Convert each area to an option array
+                                                $options = $classification->mapWithKeys(function ($classification) {
+                                                    return [$classification->id => $classification->name]; // Assuming 'name' is the attribute you want to display
+                                                });
 
-                                                    // Return the options array
-                                                    return $options;
-                                                }),
-                                            Forms\Components\TextInput::make('tree_description')
-                                                ->label('Tree Description')
-                                                ->required()
-                                                ->maxLength(255),
-                                        ]), 
-                                    Grid::make()
-                                        ->schema([
-                                            Select::make('tree_status')
-                                                ->options([
-                                                    'Diseased' => 'Diseased',
-                                                    'Healthy' => 'Healthy',
-                                                ]),
-                                            Forms\Components\TextInput::make('tree_id')
-                                                ->label('Tree ID')
-                                                ->default(TreeResource::generateRandomTreeId())
-                                                ->readonly(),
-                                        ]),
-                                    Grid::make()
-                                        ->schema([
-                                            Forms\Components\DatePicker::make('date_planted')
-                                                ->required(),
-                                            Forms\Components\DatePicker::make('validated_at'),
-                                            Forms\Components\TextInput::make('latitude')
-                                                ->required()
-                                                ->numeric(),
-                                            Forms\Components\TextInput::make('longitude')
-                                                ->required()
-                                                ->numeric(),
-                                        ]),
-                                ]), 
-                        ]),
-                ]);
+                                                // Return the options array
+                                                return $options;
+                                            }),
+                                        Forms\Components\TextInput::make('tree_description')
+                                            ->label('Description')
+                                            ->label('Tree Description')
+                                            ->required()
+                                            ->maxLength(255),
+                                    ]),
+                                Grid::make()
+                                    ->schema([
+                                        Select::make('tree_status')
+                                            ->label('Status')
+                                            ->options([
+                                                'Diseased' => 'Diseased',
+                                                'Healthy' => 'Healthy',
+                                                'For Replacement' => 'For Replacement'
+                                            ]),
+                                        Forms\Components\TextInput::make('tree_id')
+                                            ->label('Tree ID')
+                                            ->default(TreeResource::generateRandomTreeId())
+                                            ->readonly(),
+                                    ]),
+                                Grid::make()
+                                    ->schema([
+                                        Forms\Components\DatePicker::make('date_planted')
+                                            ->required(),
+                                        Forms\Components\DatePicker::make('validated_at')
+                                            ->hiddenOn('create'),
+                                        Forms\Components\TextInput::make('latitude')
+                                            ->required()
+                                            ->numeric(),
+                                        Forms\Components\TextInput::make('longitude')
+                                            ->required()
+                                            ->numeric(),
+                                    ]),
+                            ]),
+                    ]),
+            ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                ImportAction::make()
+                    ->importer(TreeImporter::class)
+                    ->color('success')
+            ])
             ->columns([
                 Tables\Columns\ImageColumn::make('tree_image')
                     ->circular(),
@@ -127,13 +143,13 @@ class TreeResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('classification.name')
                     ->searchable(),
-                    Tables\Columns\TextColumn::make('tree_status')
+                Tables\Columns\TextColumn::make('tree_status')
                     ->label('Status')
                     ->badge()
                     ->colors([
-                        'danger' => 'siseased',  // Red for 'inactive' status
-                        'success' => 'Healthy',   // Green for 'active' status
-                        // 'warning' => 'pending',  
+                        'danger' => 'Diseased',
+                        'success' => 'Healthy',
+                        'warning' => 'For Replacement',
                     ])
                     ->searchable(),
                 Tables\Columns\TextColumn::make('tree_id')
@@ -142,7 +158,7 @@ class TreeResource extends Resource
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('latitude')
-                    ->searchable(), 
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('longitude')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('validated_at')
@@ -157,9 +173,7 @@ class TreeResource extends Resource
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
@@ -170,8 +184,8 @@ class TreeResource extends Resource
             ]);
     }
 
-    
-    
+
+
     public static function generateRandomTreeId(): string
     {
         $lastTree = static::$model::query()
@@ -204,7 +218,7 @@ class TreeResource extends Resource
     {
         return [
             'index' => Pages\ListTrees::route('/'),
-            'create' => Pages\CreateTree::route('/create'),
+            'create' => Pages\TreeCreate::route('/create'),
             'edit' => Pages\EditTree::route('/{record}/edit'),
         ];
     }
