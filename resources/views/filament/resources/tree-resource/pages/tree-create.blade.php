@@ -2,11 +2,11 @@
 
 <x-filament::page>
     <form wire:submit.prevent="submit">
-        <div class="mb-5">
-            {{ $this->form }}
-        </div>
-        <div class="border bg-white shadow-md rounded-lg p-4 mb-4">
+        <div class="border bg-white shadow-md rounded-lg mb-2">
             <div id="map" class="rounded-lg" style="height: 500px; width: 100%;"></div>
+        </div>
+        <div class="mb-2">
+            {{ $this->form }}
         </div>
         <div class="flex justify-end">
             <x-filament::button type="submit">

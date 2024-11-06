@@ -19,6 +19,7 @@ class Map extends Page
 
     public $trees;
 
+
     public function mount()
     {
         $this->trees = Tree::with(['area', 'classification'])->get(); // Eager load the Area and Classification models

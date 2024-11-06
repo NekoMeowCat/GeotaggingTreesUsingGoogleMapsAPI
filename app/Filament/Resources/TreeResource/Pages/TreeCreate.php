@@ -47,22 +47,18 @@ class TreeCreate extends Page implements HasForms
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
-                        Forms\Components\FileUpload::make('tree_image')
-                            ->label('Tree Image')
-                            ->imagePreviewHeight('250')
-                            ->loadingIndicatorPosition('left')
-                            ->panelAspectRatio('3:1')
-                            ->panelLayout('integrated')
-                            ->removeUploadedFileButtonPosition('right')
-                            ->uploadButtonPosition('left')
-                            ->uploadProgressIndicatorPosition('left'),
-                    ]),
-                Forms\Components\Section::make()
-                    ->schema([
                         Forms\Components\Grid::make(3)
                             ->schema([
                                 Forms\Components\Grid::make()
                                     ->schema([
+                                        Forms\Components\TextInput::make('latitude')
+                                            ->label('Latitude')
+                                            ->required(),
+                                        // ->reactive(),
+                                        Forms\Components\TextInput::make('longitude')
+                                            ->label('Longitude')
+                                            ->required(),
+                                        // ->reactive(),
                                         Forms\Components\TextInput::make('tree_name')
                                             ->label('Tree Name')
                                             ->required()
@@ -110,18 +106,25 @@ class TreeCreate extends Page implements HasForms
                                             ->required(),
                                         Forms\Components\DatePicker::make('validated_at')
                                             ->hiddenOn('create'),
-                                        Forms\Components\TextInput::make('latitude')
-                                            ->label('Latitude')
-                                            ->required(),
-                                        // ->reactive(),
-                                        Forms\Components\TextInput::make('longitude')
-                                            ->label('Longitude')
-                                            ->required(),
-                                        // ->reactive(),
 
                                     ]),
                             ]),
                     ]),
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\FileUpload::make('tree_image')
+                            ->label('Tree Image')
+                            ->imagePreviewHeight('250')
+                            ->loadingIndicatorPosition('left')
+                            ->panelAspectRatio('3:1')
+                            ->panelLayout('integrated')
+                            ->removeUploadedFileButtonPosition('right')
+                            ->uploadButtonPosition('left')
+                            ->uploadProgressIndicatorPosition('left')
+                            ->preserveFilenames()
+                            ->directory('images')
+                            ->visibility('public')
+                    ])
             ]);
     }
 
