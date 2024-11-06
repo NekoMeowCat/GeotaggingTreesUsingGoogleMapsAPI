@@ -91,7 +91,7 @@ class TreeCreate extends Page implements HasForms
                                         Forms\Components\Select::make('tree_status')
                                             ->label('Status')
                                             ->options([
-                                                'Diseased' => 'Diseased',
+                                                'Deceased' => 'Deceased',
                                                 'Healthy' => 'Healthy',
                                                 'For Replacement' => 'For Replacement',
                                             ]),

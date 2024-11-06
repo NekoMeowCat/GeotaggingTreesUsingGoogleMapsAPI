@@ -23,7 +23,7 @@ class ClassificationResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-document-magnifying-glass';
 
-    protected static ?string $navigationGroup = 'Entities';
+    protected static ?string $navigationGroup = 'Categories';
 
     public static function form(Form $form): Form
     {

@@ -29,7 +29,7 @@ class TreeResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-puzzle-piece';
 
-    protected static ?string $navigationGroup = 'Tree Entry';
+    // protected static ?string $navigationGroup = 'Trees';
 
     public static function form(Form $form): Form
     {
