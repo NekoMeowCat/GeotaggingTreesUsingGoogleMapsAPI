@@ -1,13 +1,12 @@
 <div>
     @vite(['resources/css/app.css'])
     <x-filament-panels::page>
-        <p class="capitalize text-red-600 font-bold">Legend</p>
         <div class="grid grid-cols-5 gap-1">
             @foreach ($trees->groupBy('area.name') as $areaName => $areaTrees)
-            <div x-data="{ open: false }" class="rounded-md border">
+            <div x-data="{ open: false }" class="rounded-md">
                 <!-- Click to toggle accordion and filter map markers for multiple areas -->
                 <div @click="open = !open; toggleArea('{{ $areaName }}')"
-                    class="cursor-pointer flex justify-center bg-gray-200 p-1">
+                    class="cursor-pointer flex justify-center bg-[#81A9A8] text-white font-inter p-1 rounded-md">
                     {{ $areaName }}
                 </div>
                 <div x-show="open"
@@ -93,7 +92,7 @@
                         switch (status) {
                             case 'Healthy':
                                 return 'bg-green-400 border-2 border-green-500';
-                            case 'Diseased':
+                            case 'Deceased':
                                 return 'bg-red-400 border-2 border-red-500';
                             case 'For Replacement':
                                 return 'bg-gray-400 border-2 border-gray-500';

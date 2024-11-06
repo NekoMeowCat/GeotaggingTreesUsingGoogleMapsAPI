@@ -24,7 +24,7 @@ class AreaResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-s-globe-alt';
 
-    protected static ?string $navigationGroup = 'Entities';
+    protected static ?string $navigationGroup = 'Categories';
 
     public static function form(Form $form): Form
     {
