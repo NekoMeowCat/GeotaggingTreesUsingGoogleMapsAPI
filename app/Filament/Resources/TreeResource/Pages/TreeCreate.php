@@ -23,6 +23,7 @@ class TreeCreate extends Page implements HasForms
     public $tree_status;
     public $tree_id;
     public $date_planted;
+    public $beneficiary;
     public $latitude;
     public $longitude;
     public $area_id;
@@ -63,6 +64,7 @@ class TreeCreate extends Page implements HasForms
                                             ->label('Tree Name')
                                             ->required()
                                             ->maxLength(255),
+
                                         Forms\Components\Select::make('area_id')
                                             ->label('Area')
                                             ->options(function () {
@@ -81,10 +83,10 @@ class TreeCreate extends Page implements HasForms
                                                 });
                                                 return $options;
                                             }),
-                                        Forms\Components\TextInput::make('tree_description')
-                                            ->label('Description')
+                                        Forms\Components\TextInput::make('beneficiary')
                                             ->required()
                                             ->maxLength(255),
+
                                     ]),
                                 Forms\Components\Grid::make()
                                     ->schema([
@@ -106,6 +108,11 @@ class TreeCreate extends Page implements HasForms
                                             ->required(),
                                         Forms\Components\DatePicker::make('validated_at')
                                             ->hiddenOn('create'),
+                                        Forms\Components\Textarea::make('tree_description')
+                                            ->label('Description')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->columnSpanFull(),
 
                                     ]),
                             ]),
@@ -148,6 +155,8 @@ class TreeCreate extends Page implements HasForms
     public function submit()
     {
         $formData = $this->form->getState();
+
+
         // dd($formData);
 
         Tree::create($formData);

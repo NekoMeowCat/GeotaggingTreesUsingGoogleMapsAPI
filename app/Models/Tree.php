@@ -26,6 +26,7 @@ class Tree extends Model
         'area_id',
         'classification_id',
         'validated_at',
+        'beneficiary',
     ];
 
     protected $casts = [
